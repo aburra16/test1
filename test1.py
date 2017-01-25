@@ -1,16 +1,16 @@
 import csv
-import numpy
+import numpy as np
 import scipy
 import pandas
 
-fl = open("claimtest1.csv", "rt")
+fl = open("claimtest1.csv", "r")
 csvfl = csv.reader(fl, delimiter = ",")
 
 Date = []
 Amount = []
 Payer = []
 
-header = next(csvfl)
+next(csvfl)
 for row in csvfl:
     f1 = row[0]
     f2 = row[1]
@@ -19,5 +19,8 @@ for row in csvfl:
     Amount.append(float(f3))
     Payer.append(f2)
 
-print(Amount, sep = "\n")
-#print(numpy.mean(Amount), sep="\n")
+#for i in Amount:
+    #float(i)
+
+print(*Amount, sep="\n")
+print("Mean :", np.mean(Amount))
