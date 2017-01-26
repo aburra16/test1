@@ -29,15 +29,13 @@ class Claim:
         Claim.clmCount +=1
 
 #Populate claim list from CSV
+next(csvfl)
 for row in csvfl:
     PayerList.append(row[1])
     ClaimList.append(Claim(row[0],row[1], float(row[2])))
 
 UniquePayers = list(set(PayerList))
 
-Aetna = []
-Medicare = []
-Empire = []
 FamilyList = []
 
 #Create blank FamilyList with Payer Name
@@ -60,7 +58,7 @@ csvWR.writerow(CSVheader)
 
 for i in range(len(FamilyList)):
     print(FamilyList[i].name, ": ", "Count = ", FamilyList[i].count, "; Amount = ", FamilyList[i].amount, sep='')
-    average = float(FamilyList[i].amount) / float(FamilyList[i].count)
+    average = FamilyList[i].amount / FamilyList[i].count
     csvWR.writerow([FamilyList[i].name, FamilyList[i].count, FamilyList[i].amount, average])
 
 fl.close()
