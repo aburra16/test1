@@ -19,8 +19,5 @@ for row in csvfl:
     Amount.append(float(f3))
     Payer.append(f2)
 
-#for i in Amount:
-    #float(i)
-
 print(*Amount, sep="\n")
 print("Mean :", np.mean(Amount))
