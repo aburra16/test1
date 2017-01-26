@@ -6,25 +6,10 @@ import pandas
 fl = open("claimtest1.csv", "r")
 csvfl = csv.reader(fl, delimiter = ",")
 
-Date = []
-Amount = []
-Payer = []
-
 ClaimList = []
 
 PayerList = []
 
-next(csvfl)
-# for row in csvfl:
-#     f1 = row[0]
-#     f2 = row[1]
-#     f3 = row[2]
-#     Date.append(f1)
-#     Amount.append(float(f3))
-#     Payer.append(f2)
-#
-# print(*Amount, sep="\n")
-# print("Mean :", np.mean(Amount))
 
 class Family:
 
@@ -60,6 +45,7 @@ for i in range(len(UniquePayers)):
     iFam = Family(UniquePayers[i],0,0)
     FamilyList.append(iFam)
 
+#Populate Family list with amounts
 for cl in ClaimList:
     for i in range(len(FamilyList)):
         if cl.clmPayer == FamilyList[i].name:
@@ -72,11 +58,10 @@ csvWR = csv.writer(outputFile)
 CSVheader = ["Insurance", "Count", "Amount", "Average"]
 csvWR.writerow(CSVheader)
 
-DataOut = []
-
 for i in range(len(FamilyList)):
     print(FamilyList[i].name, ": ", "Count = ", FamilyList[i].count, "; Amount = ", FamilyList[i].amount, sep='')
     average = float(FamilyList[i].amount) / float(FamilyList[i].count)
     csvWR.writerow([FamilyList[i].name, FamilyList[i].count, FamilyList[i].amount, average])
 
 fl.close()
+outputFile.close()
