@@ -40,13 +40,9 @@ class PayerAllowable:
 #Populate allowable amounts list from CSV
 PayerList = next(csvfl)
 for row in csvfl:
-    AllowableList.append(PayerAllowable(PayerList[1],row[0],row[1]))
-    AllowableList.append(PayerAllowable(PayerList[2], row[0], row[2]))
-    AllowableList.append(PayerAllowable(PayerList[3], row[0], row[3]))
-    AllowableList.append(PayerAllowable(PayerList[4], row[0], row[4]))
-    AllowableList.append(PayerAllowable(PayerList[5], row[0], row[5]))
-    AllowableList.append(PayerAllowable(PayerList[6], row[0], row[6]))
-    AllowableList.append(PayerAllowable(PayerList[7], row[0], row[7]))
+    for i in range(1,len(PayerList)):
+        AllowableList.append(PayerAllowable(PayerList[i],row[0],row[i]))
+
 
 fl1.close()
 
