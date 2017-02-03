@@ -1,10 +1,11 @@
 import csv
 import numpy as np
 import scipy
-import pandas
+import pandas as pd
 
+#Read in file to build allowable amounts matrix
 fl1 = open("AllowableAmts.csv", "r")
-csvfl = csv.reader(fl1, delimiter = ",")
+csvfl1 = csv.reader(fl1, delimiter = ",")
 
 ClaimList = []
 ProcedureList = []
@@ -23,9 +24,11 @@ class Claim:
 
     clmCount = 0
 
-    def __init__(self, clmHosp, clmPayer, clmAmount):
+    def __init__(self, clmDate, clmHosp, clmPayer, clmProcedure, clmAmount):
+        self.clmDate = clmDate
         self.clmHosp = clmHosp
         self.clmPayer = clmPayer
+        self.clmProcedure = clmProcedure
         self.clmAmount = clmAmount
         Claim.clmCount +=1
 
@@ -38,30 +41,48 @@ class PayerAllowable:
 
 
 #Populate allowable amounts list from CSV
-PayerList = next(csvfl)
-for row in csvfl:
+PayerList = next(csvfl1)
+for row in csvfl1:
     for i in range(1,len(PayerList)):
-        AllowableList.append(PayerAllowable(PayerList[i],row[0],row[i]))
+        AllowableList.append(PayerAllowable(PayerList[i],row[0],float(row[i])))
 
 
 fl1.close()
 
-#Generate Billed Amounts
-numClaims = 89908
+#read in file to build claims list
+fl2 = open("Claims.csv", "r")
+csvfl2 = csv.reader(fl2, delimiter = ",")
 
 
-for i in range(len(AllowableList)):
-    print(AllowableList[i].name, ": " , AllowableList[i].procedure, "  ", AllowableList[i].allowable,sep='')
+#Populate with claims and blank billed amount
+next(csvfl2) #skip header
+for row in csvfl2:
+    ClaimList.append(Claim(row[0],row[1],row[2],row[3],0))
+
+#Update claim billed amount from allowable list
+for j in range(len(ClaimList)):
+    for i in range(len(AllowableList)):
+        if (AllowableList[i].name == ClaimList[j].clmPayer and
+                    AllowableList[i].procedure == ClaimList[j].clmProcedure):
+            ClaimList[j].clmAmount = np.random.normal(AllowableList[i].allowable, 0.1*AllowableList[i].allowable)
+        else:
+            pass
+print("Claim list populated", sep='')
 
 
-#outputFile = open("OutputCSV.csv", "w")
-#csvWR = csv.writer(outputFile)
-#CSVheader = ["Insurance", "Count", "Amount", "Average"]
-#csvWR.writerow(CSVheader)
+fl2.close()
 
-# for i in range(len(FamilyList)):
-#     print(FamilyList[i].name, ": ", "Count = ", FamilyList[i].count, "; Amount = ", FamilyList[i].amount, sep='')
-#     average = FamilyList[i].amount / FamilyList[i].count
-#     csvWR.writerow([FamilyList[i].name, FamilyList[i].count, FamilyList[i].amount, average])
 
-#outputFile.close()
+# for i in range(len(ClaimList)):
+#     print(ClaimList[i].clmdate, ": " , ClaimList[i].clmHosp, "  ", ClaimList[i].clmPayer,"  ", ClaimList[i].clmProcedure,"  ", ClaimList[i].clmAmount,sep='')
+
+
+outputFile = open("OutputCSV.csv", "w")
+csvWR = csv.writer(outputFile)
+CSVheader = ["Claim Date", "Facility", "Payer", "Procedure", "Billed Amount"]
+csvWR.writerow(CSVheader)
+
+for i in range(len(ClaimList)):
+    csvWR.writerow([ClaimList[i].clmDate, ClaimList[i].clmHosp, ClaimList[i].clmPayer, ClaimList[i].clmProcedure, ClaimList[i].clmAmount])
+    print("Writing row : ", i, sep='')
+outputFile.close()
